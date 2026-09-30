@@ -24,7 +24,7 @@ python3 -m http.server 8080   # open http://localhost:8080
 (ES modules need a server; opening the file directly with `file://` won't work.)
 
 ## Deploy
-Live at **https://vishnu-vulli.netlify.app**. Netlify is linked to this repo, so every push to `main` deploys automatically (the settings are in `netlify.toml`, with no build step).
+Live at **https://vishnuvulli.netlify.app**. Netlify is linked to this repo, so every push to `main` deploys automatically (the settings are in `netlify.toml`, with no build step).
 
 Other free static hosts work too, since there's nothing to build: GitHub Pages, Cloudflare Pages or Vercel (leave the build command empty and publish the repo root).
 
