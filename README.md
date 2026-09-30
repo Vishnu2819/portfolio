@@ -23,12 +23,10 @@ python3 -m http.server 8080   # open http://localhost:8080
 ```
 (ES modules need a server; opening the file directly with `file://` won't work.)
 
-## Deploy for free
-Any static host works, and there's nothing to build.
+## Deploy
+Live at **https://vishnu-vulli.netlify.app**. Netlify is linked to this repo, so every push to `main` deploys automatically (the settings are in `netlify.toml`, with no build step).
 
-- **GitHub Pages:** push this folder to a repo, then go to Settings → Pages → Deploy from branch → `main` / root.
-- **Netlify:** drag the folder onto https://app.netlify.com/drop.
-- **Cloudflare Pages / Vercel:** import the repo, leave the build command empty, and set the output directory to `/`.
+Other free static hosts work too, since there's nothing to build: GitHub Pages, Cloudflare Pages or Vercel (leave the build command empty and publish the repo root).
 
 ## Editing content
 Text lives in `index.html`. The 3D details (tooltip text, skill list) are near the top of each `build*` function in `scene.js`. If you rename a skill category, keep the `data-cat` values in the HTML chips in sync with the `SKILLS` keys.
