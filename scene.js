@@ -356,7 +356,7 @@ function start() {
     ['data', 'Databases', ['PostgreSQL', 'Cassandra', 'CockroachDB', 'DynamoDB', 'MongoDB', 'Redis']],
     ['cloud', 'Cloud & DevOps', ['AWS EC2', 'ECS', 'Fargate', 'Lambda', 'S3', 'VPC', 'CloudWatch', 'Secrets Manager', 'Docker', 'Terraform / EAC', 'Git', 'CI/CD']],
     ['ai', 'AI Tooling', ['Claude AI skills', 'GenAI workflows']],
-    ['quality', 'Testing & Quality', ['JUnit', 'Cucumber (BDD)', 'SonarQube', 'Postman']],
+    ['quality', 'Testing & Quality', ['JUnit', 'Cucumber (BDD)', 'Cypress', 'Contract testing', 'Component testing', 'Integration testing', 'E2E testing', 'SonarQube', 'Postman']],
     ['design', 'System Design', ['DS & Algorithms', 'Design Patterns', 'OOD', 'SOA']],
   ];
   const skillSets = [];

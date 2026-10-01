@@ -115,7 +115,7 @@ h2 { font-size: clamp(42px, 5.4vw, 76px); line-height: .95; }
 
 .stats { display: flex; gap: 28px; margin: 0 0 20px; padding: 16px 0; border-top: 1px solid var(--hair); border-bottom: 1px solid var(--hair); }
 .stats div { display: flex; flex-direction: column; }
-.stats strong { font: 400 40px/1 var(--serif); }
+.stats strong { font: 400 40px/1 var(--serif); white-space: nowrap; }
 .stats span { font-size: 12px; color: var(--muted); max-width: 12em; margin-top: 6px; line-height: 1.35; }
 
 .panel ul { list-style: none; padding: 0; margin: 0 0 18px; }

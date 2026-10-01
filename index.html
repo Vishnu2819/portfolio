@@ -77,7 +77,7 @@
       <div class="panel">
         <p class="eyebrow">Software Engineer · Jersey City, NJ</p>
         <h1>Vishnu <em>Vulli</em></h1>
-        <p class="lede">I build backend systems (RESTful APIs, distributed microservices and cloud-native services on AWS) for fintech teams handling security-sensitive data. Currently at <strong>JPMorgan Chase</strong>.</p>
+        <p class="lede">I build backend systems (RESTful APIs, distributed microservices and cloud-native services on AWS) for fintech teams handling payments and security-sensitive data. Currently at <strong>JPMorgan Chase</strong>.</p>
         <div class="cta">
           <a class="btn primary" href="#clemson">Follow the line <span aria-hidden="true">↓</span></a>
           <a class="btn" href="mailto:vishnuvulli18@gmail.com">Say hello</a>
@@ -124,8 +124,9 @@
           <li>Integrated ML-generated risk scores from an internal Feature Store / ML Engine API into service logic.</li>
           <li>Queried and updated PostgreSQL, DynamoDB and Redis for risk scoring, and added CloudWatch + Logback logging for faster triage.</li>
           <li>Built Angular / NgRx workflow UI from Figma specs.</li>
+          <li>Wrote Cucumber (BDD) tests for the backend APIs and Cypress tests for the Angular front end.</li>
         </ul>
-        <p class="tags"><span>Java 17</span><span>Spring Boot</span><span>PostgreSQL</span><span>DynamoDB</span><span>Redis</span><span>Angular</span><span>NgRx</span></p>
+        <p class="tags"><span>Java 17</span><span>Spring Boot</span><span>PostgreSQL</span><span>DynamoDB</span><span>Redis</span><span>Angular</span><span>NgRx</span><span>Cucumber</span><span>Cypress</span></p>
         <p class="art-hint"><i></i><span class="fine">Hover the orbiting nodes. Each one is an endpoint I own.</span><span class="coarse">Tap a node to see what it does.</span></p>
       </div>
     </section>
@@ -140,15 +141,18 @@
         <div class="stats">
           <div><strong>13</strong><span>microservices consume xref</span></div>
           <div><strong>AES-256</strong><span>GCM card-data decryption</span></div>
+          <div><strong>6</strong><span>test layers on the payments service</span></div>
         </div>
         <ul>
+          <li>Develop RESTful APIs in Java / Spring Boot for a <em>payments</em> microservice in the experience layer, serving customer-facing payment flows.</li>
+          <li>Own automated testing for that service across unit, component, contract, integration, acceptance and end-to-end tests; contract tests guard API compatibility with consuming and dependent services.</li>
           <li>Built <em>xref</em>, a GraphQL cross-reference mapping service on CockroachDB, used by 13 internal microservices.</li>
           <li>Implemented card-data decryption (ECDH + AES-256-GCM) for virtual and physical card services, plus a developer simulator now used by multiple teams.</li>
           <li>Removed a query bottleneck in a multi-API financial data system by restructuring SQL joins with materialized CTEs.</li>
           <li>Ship containerised services to AWS ECS in isolated VPCs, provisioned with EAC (Terraform) and monitored in CloudWatch.</li>
           <li>Built custom Claude AI skills that automate repetitive backend and ops work.</li>
         </ul>
-        <p class="tags"><span>Java</span><span>Spring Boot</span><span>GraphQL</span><span>CockroachDB</span><span>AWS ECS</span><span>Terraform</span><span>Claude AI</span></p>
+        <p class="tags"><span>Java</span><span>Spring Boot</span><span>Payments APIs</span><span>Contract testing</span><span>GraphQL</span><span>CockroachDB</span><span>AWS ECS</span><span>Terraform</span><span>Claude AI</span></p>
         <p class="art-hint"><i></i><span class="fine">Drag to spin the xref graph. Hover a service or the lock.</span><span class="coarse">Tap a service node or the lock.</span></p>
       </div>
     </section>
@@ -177,7 +181,7 @@
           <div class="skill-group" data-cat="data"><dt>Databases</dt><dd>PostgreSQL · Cassandra · CockroachDB · DynamoDB · MongoDB · Redis</dd></div>
           <div class="skill-group" data-cat="cloud"><dt>Cloud</dt><dd>AWS (EC2, ECS, Fargate, Lambda, S3, VPC, CloudWatch, Secrets Manager) · Docker · Terraform / EAC · Git · CI/CD</dd></div>
           <div class="skill-group" data-cat="ai"><dt>AI</dt><dd>Claude AI custom skills · GenAI-assisted workflows</dd></div>
-          <div class="skill-group" data-cat="quality"><dt>Testing</dt><dd>JUnit · Cucumber (BDD) · SonarQube · Postman</dd></div>
+          <div class="skill-group" data-cat="quality"><dt>Testing</dt><dd>JUnit · Cucumber (BDD) · Cypress · Contract · Component / Integration / E2E · SonarQube · Postman</dd></div>
           <div class="skill-group" data-cat="design"><dt>Design</dt><dd>DS &amp; Algorithms · Design Patterns · OOD · SOA</dd></div>
         </dl>
       </div>
