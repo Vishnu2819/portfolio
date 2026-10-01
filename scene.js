@@ -1,4 +1,4 @@
-// "One Line" — a single ink line threads through six minimalist sculptures.
+// "One Line" — a single ink line threads through seven minimalist sculptures.
 // Only lines & points, no textures or models: tiny, fast, free-host friendly.
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Color, ColorManagement, LinearSRGBColorSpace,
@@ -82,13 +82,14 @@ function start() {
 
   // ---------- World layout ----------
   const A = [
-    new Vector3(0, 0, 0), new Vector3(15, 2, -20), new Vector3(-3, -1, -42),
-    new Vector3(16, 3, -62), new Vector3(1, 6, -84), new Vector3(8, 1, -106),
+    new Vector3(0, 0, 0), new Vector3(15, 2, -20), new Vector3(-3, -1, -42), new Vector3(16, 3, -62),
+    new Vector3(1, 6, -84), new Vector3(15, 3, -106), new Vector3(6, 1, -128),
   ];
-  const SIDE = [1, -1, 1, -1, 1, -1];      // which side of the screen the sculpture sits (desktop)
-  const YAW = [0, 0.32, -0.28, 0.38, -0.22, 0];
+  const LAST = A.length - 1;
+  const SIDE = A.map((_, i) => (i % 2 ? -1 : 1));   // which side of the screen the sculpture sits (desktop)
+  const YAW = [0, 0.32, -0.28, 0.38, -0.22, 0.3, 0];
   // Small per-chapter nudges so each sculpture clears the text column and rail.
-  const NUDGE = [0, 0, -0.6, -0.8, 0, 0].map((x) => new Vector3(x, 0, 0));
+  const NUDGE = [0, -1, 0, 0, 0, 0, 0].map((x) => new Vector3(x, 0, 0));
 
   // ---------- 00 · Hero: one-line knot + cursor-reactive ripple field ----------
   function buildHero() {
@@ -151,7 +152,73 @@ function start() {
     };
   }
 
-  // ---------- 01 · Clemson: ~30k records as a point cloud that settles into a bar chart ----------
+  // ---------- 01 · TCS: Jenkins pipeline → ECS cluster (EC2 | Fargate) → ElastiCache → DynamoDB, plus Lambda ----------
+  function buildTCS() {
+    const group = new Group(), spin = new Group();
+    group.add(spin);
+    spin.scale.setScalar(0.72);
+    const STAGES = ['Commit', 'Build', 'Test', 'Docker image', 'Deploy to ECS'];
+    const SY = 2.7, sx = (i) => -3 + i * 1.5;
+    const stages = STAGES.map((_, i) => new Vector3(sx(i), SY, 0));
+    spin.add(new Line(geo([stages[0], stages[4], new Vector3(sx(4), 1.35, 0)]), lineMat(pal.muted)));
+    spin.add(dots(stages, dotMat(pal.ink, 9)));
+    const packet = dots([new Vector3()], dotMat(pal.accent, 11));
+    spin.add(packet);
+
+    // ECS cluster with two capacity groups, three tasks (containers) each
+    const cluster = new LineSegments(new EdgesGeometry(new BoxGeometry(6.4, 2.2, 1.4)), new LineDashedMaterial({ dashSize: 0.2, gapSize: 0.14 }));
+    cluster.material.color = pal.muted;
+    cluster.computeLineDistances();
+    cluster.position.y = 0.25;
+    spin.add(cluster, new Line(geo([new Vector3(0, -0.75, 0), new Vector3(0, 1.25, 0)]), lineMat(pal.muted, 0.5)));
+    const tasks = [];
+    for (let g = 0; g < 2; g++) for (let k = 0; k < 3; k++) {
+      const m = edges(new BoxGeometry(0.5, 0.5, 0.5), pal.ink);
+      m.position.set((g ? 0.75 : -2.45) + k * 0.85, 0.25, 0);
+      m.userData.launch = g ? 'Fargate' : 'EC2';
+      tasks.push(m); spin.add(m);
+    }
+
+    // Data tier: ElastiCache in front of DynamoDB; Lambda for async work
+    const cache = edges(new OctahedronGeometry(0.42), pal.ink);
+    cache.position.set(1.3, -2.45, 0);
+    const dynamo = edges(new CylinderGeometry(0.36, 0.36, 0.6, 16, 1), pal.ink);
+    dynamo.position.set(-1.3, -2.45, 0);
+    const lam = new LineSegments(geo([
+      new Vector3(-0.28, 0.42, 0), new Vector3(0.3, -0.42, 0), new Vector3(0.01, 0, 0), new Vector3(-0.3, -0.42, 0),
+    ]), lineMat(pal.ink));
+    lam.position.set(3.3, -2.45, 0);
+    spin.add(cache, dynamo, lam, new LineSegments(geo([
+      new Vector3(0.5, -0.85, 0), new Vector3(1.2, -1.95, 0),
+      new Vector3(0.85, -2.45, 0), new Vector3(-0.85, -2.45, 0),
+      new Vector3(3.2, -0.3, 0), new Vector3(3.3, -1.9, 0),
+    ]), lineMat(pal.muted, 0.6)));
+
+    const hotspots = [
+      ...stages.map((p, i) => ({ obj: spin, local: p, title: STAGES[i], text: 'Jenkins CI/CD pipeline stage' })),
+      ...tasks.map((m) => ({ obj: spin, local: m.position, title: `ECS task · ${m.userData.launch} launch type`, text: 'Docker container running a Spring Boot microservice' })),
+      { obj: spin, local: cache.position, title: 'ElastiCache', text: 'Caching layer in front of DynamoDB: lower read latency and load' },
+      { obj: spin, local: dynamo.position, title: 'DynamoDB', text: 'Persistence for the microservices' },
+      { obj: spin, local: lam.position, title: 'AWS Lambda', text: 'Event-driven functions for asynchronous processing' },
+    ];
+    return {
+      group, spin, auto: 0, spring: true, hotspots,
+      update(t) {
+        // A build travels the pipeline, drops into the cluster, and lights up the task it deployed.
+        const run = t * 0.22, d = run % 1, live = Math.floor(run) % tasks.length;
+        if (d < 0.8) packet.position.set(-3 + 6 * (d / 0.8), SY, 0);
+        else packet.position.set(3, SY - ((d - 0.8) / 0.2) * (SY - 1.35), 0);
+        tasks.forEach((m, i) => {
+          m.material.color = i === live ? pal.accent : pal.ink;
+          m.rotation.y = t * 0.4 + i;
+        });
+        cache.rotation.y = t * 0.5;
+        dynamo.rotation.y = t * 0.3;
+      },
+    };
+  }
+
+  // ---------- 02 · Clemson: ~30k records as a point cloud that settles into a bar chart ----------
   function buildClemson() {
     const group = new Group(), spin = new Group();
     group.add(spin);
@@ -218,7 +285,7 @@ function start() {
     };
   }
 
-  // ---------- 02 · Capital One: risk gauge, 8 orbiting endpoints, 3 data stores ----------
+  // ---------- 03 · Capital One: risk gauge, 8 orbiting endpoints, 3 data stores ----------
   function buildCapOne() {
     const group = new Group(), spin = new Group();
     group.add(spin);
@@ -280,7 +347,7 @@ function start() {
     };
   }
 
-  // ---------- 03 · JPMorgan Chase: xref graph (13 consumers), isolated VPC, ECDH/AES lock ----------
+  // ---------- 04 · JPMorgan Chase: xref graph (13 consumers), isolated VPC, ECDH/AES lock ----------
   function buildJPMC() {
     const group = new Group(), spin = new Group();
     group.add(spin);
@@ -348,13 +415,13 @@ function start() {
     };
   }
 
-  // ---------- 04 · Skills constellation ----------
+  // ---------- 05 · Skills constellation ----------
   const SKILLS = [
     ['lang', 'Languages', ['Java', 'Python', 'SQL', 'JavaScript']],
     ['backend', 'Backend & APIs', ['Spring Boot', 'RESTful APIs', 'Microservices', 'GraphQL', 'Node.js / Express']],
     ['frontend', 'Frontend', ['React', 'Angular', 'NgRx']],
     ['data', 'Databases', ['PostgreSQL', 'Cassandra', 'CockroachDB', 'DynamoDB', 'MongoDB', 'Redis']],
-    ['cloud', 'Cloud & DevOps', ['AWS EC2', 'ECS', 'Fargate', 'Lambda', 'S3', 'VPC', 'CloudWatch', 'Secrets Manager', 'Docker', 'Terraform / EAC', 'Git', 'CI/CD']],
+    ['cloud', 'Cloud & DevOps', ['AWS EC2', 'ECS', 'Fargate', 'Lambda', 'S3', 'VPC', 'CloudWatch', 'ElastiCache', 'Secrets Manager', 'Docker', 'Jenkins', 'Splunk', 'Terraform / EAC', 'Git', 'CI/CD']],
     ['ai', 'AI Tooling', ['Claude AI skills', 'GenAI workflows']],
     ['quality', 'Testing & Quality', ['JUnit', 'Cucumber (BDD)', 'Cypress', 'Contract testing', 'Component testing', 'Integration testing', 'E2E testing', 'SonarQube', 'Postman']],
     ['design', 'System Design', ['DS & Algorithms', 'Design Patterns', 'OOD', 'SOA']],
@@ -396,7 +463,7 @@ function start() {
   }
   addEventListener('skillfilter', (e) => applySkill(e.detail));
 
-  // ---------- 05 · Finale: three certification hexagons, the line closes into a circle ----------
+  // ---------- 06 · Finale: three certification hexagons, the line closes into a circle ----------
   function buildFinale() {
     const group = new Group(), spin = new Group();
     group.add(spin);
@@ -442,7 +509,7 @@ function start() {
   const raycaster = new Raycaster();
   const isUI = (el) => !!el?.closest?.('.panel, a, button, header, .rail');
 
-  const chapters = [buildHero(), buildClemson(), buildCapOne(), buildJPMC(), buildSkills(), buildFinale()];
+  const chapters = [buildHero(), buildTCS(), buildClemson(), buildCapOne(), buildJPMC(), buildSkills(), buildFinale()];
   chapters.forEach((ch, i) => {
     ch.group.position.copy(A[i]).add(NUDGE[i]);
     ch.group.rotation.y = YAW[i];
@@ -453,8 +520,8 @@ function start() {
 
   // ---------- The journey line: an ink tube threading every chapter, drawn as you scroll ----------
   const jp = [A[0].clone().add(new Vector3(-15, -3.5, 3))];
-  for (let i = 0; i < 6; i++) {
-    const p = A[i].clone().add(i === 5 ? new Vector3(0, -4.2, 0) : new Vector3(0, -3.3, -1.5));
+  for (let i = 0; i <= LAST; i++) {
+    const p = A[i].clone().add(i === LAST ? new Vector3(0, -4.2, 0) : new Vector3(0, -3.3, -1.5));
     if (i > 0) {
       const prev = jp[jp.length - 1];
       jp.push(prev.clone().lerp(p, 0.5).add(new Vector3(Math.sin(i * 1.7) * 3, i % 2 ? 3 : -2, 0)));
@@ -484,7 +551,7 @@ function start() {
 
   // Ambient dust for depth
   const dust = [];
-  for (let i = 0; i < (MOBILE ? 350 : 700); i++) dust.push(new Vector3(-18 + rand() * 50, -9 + rand() * 24, -122 + rand() * 136));
+  for (let i = 0; i < (MOBILE ? 350 : 700); i++) dust.push(new Vector3(-18 + rand() * 50, -9 + rand() * 24, A[LAST].z - 16 + rand() * (30 - A[LAST].z)));
   scene.add(dots(dust, dotMat(pal.muted, 2.2, 0.7)));
 
   // ---------- Camera rig ----------
@@ -599,14 +666,14 @@ function start() {
     intro = Math.min(1, intro + dt / 1.8);
 
     // Camera along the rail, with pointer parallax and a side offset so text and art don't collide.
-    const u = camC / 5;
+    const u = camC / LAST;
     camCurve.getPoint(u, camera.position);
     tgtCurve.getPoint(u, look);
     par.x = damp(par.x, ptr.mouse ? ptr.ndc.x : 0, 2.5, dt);
     par.y = damp(par.y, ptr.mouse ? ptr.ndc.y : 0, 2.5, dt);
     if (!REDUCED) camera.position.add(tmp.set(par.x * 0.7, par.y * 0.4, 0));
     camera.lookAt(look);
-    const i0 = Math.floor(camC), side = SIDE[i0] + (SIDE[Math.min(i0 + 1, 5)] - SIDE[i0]) * smooth(camC - i0);
+    const i0 = Math.floor(camC), side = SIDE[i0] + (SIDE[Math.min(i0 + 1, LAST)] - SIDE[i0]) * smooth(camC - i0);
     if (wide) camera.setViewOffset(W, H, -side * W * 0.17, 0, W, H);
     else camera.setViewOffset(W, H, 0, H * 0.2, W, H);
 
@@ -623,7 +690,7 @@ function start() {
       ch.update(t, dt, camC - i);
     });
 
-    const f = arcFrac(((1 + 2 * camC + 0.25) / 11) * smooth(intro));
+    const f = arcFrac(((1 + 2 * camC + 0.25) / (2 * LAST + 1)) * smooth(intro));
     tube.geometry.setDrawRange(0, Math.floor(f * SEGS) * RADIAL * 6);
     path.getPointAt(f, nib.position);
 

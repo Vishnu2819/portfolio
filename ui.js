@@ -20,12 +20,17 @@
   // Scroll position where each chapter is centred in the viewport.
   // On narrow screens each chapter opens with an empty "art window", so the stop is its top edge.
   const narrow = matchMedia('(max-width: 820px), (max-aspect-ratio: 1/1)');
+  const HEADER = 88;
   function measure() {
     const max = root.scrollHeight - innerHeight;
     const flat = narrow.matches && !root.classList.contains('no-gl');
     J.stops = sections.map((s, i) => {
       const r = s.getBoundingClientRect(), top = r.top + scrollY;
-      return Math.min(max, Math.max(0, flat && i > 0 ? top : top + r.height / 2 - innerHeight / 2));
+      let stop = flat && i > 0 ? top : top + r.height / 2 - innerHeight / 2;
+      // A panel taller than the viewport would be centred under the header; align its top below the header instead.
+      const p = s.querySelector('.panel')?.getBoundingClientRect();
+      if (!flat && p && p.height > innerHeight - 2 * HEADER) stop = Math.min(stop, p.top + scrollY - HEADER);
+      return Math.min(max, Math.max(0, stop));
     });
     update();
   }

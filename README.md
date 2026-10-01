@@ -1,6 +1,6 @@
 # Vishnu Vulli: portfolio
 
-An interactive, minimalist portfolio. A single ink line threads through the career story (Clemson → Capital One → JPMorgan Chase), and each chapter gets its own small Three.js sculpture.
+An interactive, minimalist portfolio. A single ink line threads through the career story (TCS → Clemson → Capital One → JPMorgan Chase), and each chapter gets its own small Three.js sculpture.
 
 - **No build step.** Plain HTML, CSS and JS. Three.js (r170) loads from the jsDelivr CDN through an import map.
 - **Small.** Our own code is about 20 KB gzipped, with no images, models or textures.
@@ -13,7 +13,7 @@ An interactive, minimalist portfolio. A single ink line threads through the care
 | `index.html` | All content, meta tags and the import map |
 | `style.css` | Theme tokens (light/dark), layout, responsive rules and fallback styles |
 | `ui.js` | Scroll → chapter progress, chapter rail, reveal animations, theme toggle, skill filter, cursor, loader |
-| `scene.js` | Three.js scene: camera path, journey line, six chapter sculptures, hover tooltips, drag-to-spin |
+| `scene.js` | Three.js scene: camera path, journey line, seven chapter sculptures, hover tooltips, drag-to-spin |
 | `resume.pdf` | The downloadable résumé |
 
 ## Run locally
