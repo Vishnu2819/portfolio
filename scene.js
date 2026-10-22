@@ -418,13 +418,13 @@ function start() {
   // ---------- 05 · Skills constellation ----------
   const SKILLS = [
     ['lang', 'Languages', ['Java', 'Python', 'SQL', 'JavaScript']],
-    ['backend', 'Backend & APIs', ['Spring Boot', 'RESTful APIs', 'Microservices', 'GraphQL', 'Node.js / Express']],
+    ['backend', 'Backend & APIs', ['Spring Boot', 'RESTful APIs', 'Microservices', 'GraphQL', 'ADFS / SSO', 'Node.js / Express']],
     ['frontend', 'Frontend', ['React', 'Angular', 'NgRx']],
     ['data', 'Databases', ['PostgreSQL', 'Cassandra', 'CockroachDB', 'DynamoDB', 'MongoDB', 'Redis']],
     ['cloud', 'Cloud & DevOps', ['AWS EC2', 'ECS', 'Fargate', 'Lambda', 'S3', 'VPC', 'CloudWatch', 'ElastiCache', 'Secrets Manager', 'Docker', 'Jenkins', 'Splunk', 'Terraform / EAC', 'Git', 'CI/CD']],
     ['ai', 'AI Tooling', ['Claude AI skills', 'GenAI workflows']],
     ['quality', 'Testing & Quality', ['JUnit', 'Cucumber (BDD)', 'Cypress', 'Contract testing', 'Component testing', 'Integration testing', 'E2E testing', 'SonarQube', 'Postman']],
-    ['design', 'System Design', ['DS & Algorithms', 'Design Patterns', 'OOD', 'SOA']],
+    ['design', 'System Design', ['DS & Algorithms', 'Design Patterns', 'Hexagonal Architecture', 'OOD', 'SOA']],
   ];
   const skillSets = [];
   function buildSkills() {
