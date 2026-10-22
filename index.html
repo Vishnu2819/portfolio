@@ -168,14 +168,16 @@
         </div>
         <ul>
           <li>Develop RESTful APIs in Java / Spring Boot for a <em>payments</em> microservice in the experience layer, serving customer-facing payment flows.</li>
+          <li>Migrated the payments service from a layered to a <em>hexagonal</em> (ports-and-adapters) architecture, keeping payment domain logic independent of frameworks and infrastructure.</li>
           <li>Own its automated testing: unit, component, contract, integration, acceptance and end-to-end, with contract tests guarding API compatibility.</li>
           <li>Built <em>xref</em>, a GraphQL cross-reference mapping service on CockroachDB, used by 13 internal microservices.</li>
           <li>Implemented card-data decryption (ECDH + AES-256-GCM) for virtual and physical card services, plus a developer simulator now used by multiple teams.</li>
+          <li>Set up ADFS authentication for the payments service and the simulator frontend, so only authorized internal users can get in.</li>
           <li>Removed a query bottleneck in a multi-API financial data system by restructuring SQL joins with materialized CTEs.</li>
           <li>Ship containerised services to AWS ECS in isolated VPCs via EAC (Terraform), monitored in CloudWatch.</li>
           <li>Built custom Claude AI skills that automate repetitive backend and ops work.</li>
         </ul>
-        <p class="tags"><span>Java</span><span>Spring Boot</span><span>Payments APIs</span><span>Contract testing</span><span>GraphQL</span><span>CockroachDB</span><span>AWS ECS</span><span>Terraform</span><span>Claude AI</span></p>
+        <p class="tags"><span>Java</span><span>Spring Boot</span><span>Payments APIs</span><span>Hexagonal architecture</span><span>ADFS</span><span>Contract testing</span><span>GraphQL</span><span>CockroachDB</span><span>AWS ECS</span><span>Terraform</span><span>Claude AI</span></p>
         <p class="art-hint"><i></i><span class="fine">Drag to spin the xref graph. Hover a service or the lock.</span><span class="coarse">Tap a service node or the lock.</span></p>
       </div>
     </section>
@@ -199,13 +201,13 @@
         </div>
         <dl class="skills">
           <div class="skill-group" data-cat="lang"><dt>Languages</dt><dd>Java · Python · SQL · JavaScript</dd></div>
-          <div class="skill-group" data-cat="backend"><dt>Backend</dt><dd>Spring Boot · REST · Microservices · GraphQL · Node.js / Express</dd></div>
+          <div class="skill-group" data-cat="backend"><dt>Backend</dt><dd>Spring Boot · REST · Microservices · GraphQL · ADFS / SSO · Node.js / Express</dd></div>
           <div class="skill-group" data-cat="frontend"><dt>Frontend</dt><dd>React · Angular · NgRx</dd></div>
           <div class="skill-group" data-cat="data"><dt>Databases</dt><dd>PostgreSQL · Cassandra · CockroachDB · DynamoDB · MongoDB · Redis</dd></div>
           <div class="skill-group" data-cat="cloud"><dt>Cloud</dt><dd>AWS (EC2, ECS, Fargate, Lambda, S3, VPC, ElastiCache, CloudWatch, Secrets Manager) · Docker · Jenkins · Splunk · Terraform / EAC · Git · CI/CD</dd></div>
           <div class="skill-group" data-cat="ai"><dt>AI</dt><dd>Claude AI custom skills · GenAI-assisted workflows</dd></div>
           <div class="skill-group" data-cat="quality"><dt>Testing</dt><dd>JUnit · Cucumber (BDD) · Cypress · Contract · Component / Integration / E2E · SonarQube · Postman</dd></div>
-          <div class="skill-group" data-cat="design"><dt>Design</dt><dd>DS &amp; Algorithms · Design Patterns · OOD · SOA</dd></div>
+          <div class="skill-group" data-cat="design"><dt>Design</dt><dd>DS &amp; Algorithms · Design Patterns · Hexagonal Architecture · OOD · SOA</dd></div>
         </dl>
       </div>
     </section>
