@@ -154,6 +154,16 @@ h2 { font-size: clamp(42px, 5.4vw, 76px); line-height: .95; }
 .skill-group.dim { opacity: .25; }
 
 /* Contact */
+.projects li { padding: 14px 0 0; margin: 0 0 14px; border-top: 1px solid var(--hair); }
+.projects li::before { display: none; }
+.projects h3 { font: 400 26px/1.1 var(--serif); margin: 0 0 6px; }
+.projects h3 a { text-decoration: none; }
+.projects h3 a:hover { color: var(--accent); }
+.projects h3 span { font: 14px var(--sans); color: var(--accent); }
+.projects p { margin: 0 0 6px; font-size: 14px; line-height: 1.5; }
+.projects .stack { font-size: 12px; color: var(--muted); }
+.projects .stack a { color: inherit; }
+.projects .stack a:hover { color: var(--accent); }
 .certs li { padding-left: 0; display: flex; gap: 12px; align-items: baseline; }
 .certs li::before { display: none; }
 .certs span { flex: none; width: 52px; font-size: 11px; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); }

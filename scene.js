@@ -1,4 +1,4 @@
-// "One Line" — a single ink line threads through seven minimalist sculptures.
+// "One Line" — a single ink line threads through eight minimalist sculptures.
 // Only lines & points, no textures or models: tiny, fast, free-host friendly.
 import {
   WebGLRenderer, Scene, PerspectiveCamera, Color, ColorManagement, LinearSRGBColorSpace,
@@ -83,13 +83,14 @@ function start() {
   // ---------- World layout ----------
   const A = [
     new Vector3(0, 0, 0), new Vector3(15, 2, -20), new Vector3(-3, -1, -42), new Vector3(16, 3, -62),
-    new Vector3(1, 6, -84), new Vector3(15, 3, -106), new Vector3(6, 1, -128),
+    new Vector3(1, 6, -84), new Vector3(15, 3, -106), new Vector3(0, 4, -128), new Vector3(14, 1, -150),
   ];
   const LAST = A.length - 1;
-  const SIDE = A.map((_, i) => (i % 2 ? -1 : 1));   // which side of the screen the sculpture sits (desktop)
-  const YAW = [0, 0.32, -0.28, 0.38, -0.22, 0.3, 0];
+  // Which side of the screen each sculpture sits on (desktop); opposite the chapter's data-side text.
+  const SIDE = [1, -1, 1, -1, 1, -1, -1, 1];
+  const YAW = [0, 0.32, -0.28, 0.38, -0.22, 0.3, -0.24, 0.12];
   // Small per-chapter nudges so each sculpture clears the text column and rail.
-  const NUDGE = [0, -1, 0, 0, 0, 0, 0].map((x) => new Vector3(x, 0, 0));
+  const NUDGE = [0, -1, 0, 0, 0, 0, -0.6, 0].map((x) => new Vector3(x, 0, 0));
 
   // ---------- 00 · Hero: one-line knot + cursor-reactive ripple field ----------
   function buildHero() {
@@ -463,7 +464,84 @@ function start() {
   }
   addEventListener('skillfilter', (e) => applySkill(e.detail));
 
-  // ---------- 06 · Finale: three certification hexagons, the line closes into a circle ----------
+  // ---------- 06 · Projects: three floating browser windows, one per live app ----------
+  function buildProjects() {
+    const group = new Group(), spin = new Group();
+    group.add(spin);
+    spin.scale.setScalar(0.9);
+    const W2 = 1.25, H2 = 0.9, R = 0.12;
+    const frameLoop = () => {
+      const p = [];
+      [[W2 - R, H2 - R, 0], [-W2 + R, H2 - R, 1], [-W2 + R, -H2 + R, 2], [W2 - R, -H2 + R, 3]].forEach(([cx, cy, q]) =>
+        arc(R, 6, (q * Math.PI) / 2, ((q + 1) * Math.PI) / 2).forEach((v) => p.push(v.add(new Vector3(cx, cy, 0)))));
+      return p;
+    };
+    const glyphs = {
+      // Oversized tee, drawn as one closed stroke.
+      shop: () => new LineLoop(geo([[-0.2, 0.38], [0, 0.3], [0.2, 0.38], [0.5, 0.22], [0.42, 0.04], [0.3, 0.1], [0.3, -0.42], [-0.3, -0.42], [-0.3, 0.1], [-0.42, 0.04], [-0.5, 0.22]]
+        .map(([x, y]) => new Vector3(x, y - 0.08, 0))), lineMat(pal.ink)),
+      // Macro donut: protein / carbs / fat arcs.
+      macro: () => {
+        const g = new Group();
+        [[0, 0.32, pal.accent], [0.34, 0.76, pal.ink], [0.8, 0.98, pal.muted]].forEach(([a, b, c]) =>
+          g.add(new Line(geo(arc(0.36, 40, a * TAU, b * TAU).map((v) => v.setY(v.y - 0.08))), lineMat(c))));
+        return g;
+      },
+      // Film frame with a play button.
+      movie: () => {
+        const g = new Group();
+        g.add(new LineLoop(geo([new Vector3(-0.5, 0.26, 0), new Vector3(0.5, 0.26, 0), new Vector3(0.5, -0.42, 0), new Vector3(-0.5, -0.42, 0)]), lineMat(pal.ink)));
+        g.add(new LineLoop(geo([new Vector3(-0.1, 0.06, 0), new Vector3(0.16, -0.08, 0), new Vector3(-0.1, -0.22, 0)]), lineMat(pal.accent)));
+        const holes = [];
+        for (let i = 0; i < 6; i++) holes.push(new Vector3(-0.42 + i * 0.168, 0.34, 0), new Vector3(-0.42 + i * 0.168, -0.5, 0));
+        g.add(dots(holes, dotMat(pal.muted, 3)));
+        return g;
+      },
+    };
+    const PROJECTS = [
+      ['movie', 'AllAboutMovies', 'React + Spring Boot + MongoDB · click to open', 'https://vishnu2819.github.io/AllAboutMovies_UI/', new Vector3(-1.9, 1.2, 0.4)],
+      ['shop', 'Beetle Threads', 'Next.js storefront with cart & checkout · click to open', 'https://vishnu2819.github.io/Beetle_Threads/', new Vector3(0.3, -1.15, 1.0)],
+      ['macro', 'Fitness Pal', 'Macro calculator in React + TypeScript · click to open', 'https://vishnu2819.github.io/Fitness-pal/', new Vector3(2.0, 1.3, -0.6)],
+    ];
+    const wins = PROJECTS.map(([kind, , , , pos]) => {
+      const w = new Group();
+      w.position.copy(pos);
+      w.userData.base = pos.clone();
+      const frame = new LineLoop(geo(frameLoop()), lineMat(pal.ink));
+      w.add(frame);
+      w.add(new Line(geo([new Vector3(-W2, H2 - 0.28, 0), new Vector3(W2, H2 - 0.28, 0)]), lineMat(pal.muted)));
+      w.add(dots([0, 1, 2].map((k) => new Vector3(-W2 + 0.2 + k * 0.15, H2 - 0.14, 0)), dotMat(pal.muted, 4)));
+      const glyph = glyphs[kind]();
+      w.add(glyph);
+      w.userData.glyph = glyph;
+      w.userData.frame = frame;
+      spin.add(w);
+      return w;
+    });
+    // The journey line threads through the three windows.
+    const thread = new Line(geo(new CatmullRomCurve3(wins.map((w) => w.position.clone())).getPoints(60)), lineMat(pal.accent, 0.55));
+    spin.add(thread);
+    const hotspots = wins.map((w, k) => ({
+      obj: w, local: new Vector3(), title: PROJECTS[k][1], text: PROJECTS[k][2],
+      onHover(on) { w.userData.frame.material.color = on ? pal.accent : pal.ink; },
+      onClick: () => open(PROJECTS[k][3], '_blank', 'noopener'),
+    }));
+    return {
+      group, spin, auto: 0.06, spring: true, hotspots,
+      update(t) {
+        wins.forEach((w, k) => {
+          w.position.y = w.userData.base.y + Math.sin(t * 0.8 + k * 2.1) * 0.15;
+          w.rotation.y = Math.sin(t * 0.4 + k) * 0.25 - spin.rotation.y;
+          const g = w.userData.glyph;
+          if (k === 2) g.rotation.z = -t * 0.5;
+          else if (k === 0) g.scale.setScalar(1 + Math.sin(t * 2.2) * 0.04);
+          else g.rotation.z = Math.sin(t * 1.3) * 0.08;
+        });
+      },
+    };
+  }
+
+  // ---------- 07 · Finale: three certification hexagons, the line closes into a circle ----------
   function buildFinale() {
     const group = new Group(), spin = new Group();
     group.add(spin);
@@ -509,7 +587,7 @@ function start() {
   const raycaster = new Raycaster();
   const isUI = (el) => !!el?.closest?.('.panel, a, button, header, .rail');
 
-  const chapters = [buildHero(), buildTCS(), buildClemson(), buildCapOne(), buildJPMC(), buildSkills(), buildFinale()];
+  const chapters = [buildHero(), buildTCS(), buildClemson(), buildCapOne(), buildJPMC(), buildSkills(), buildProjects(), buildFinale()];
   chapters.forEach((ch, i) => {
     ch.group.position.copy(A[i]).add(NUDGE[i]);
     ch.group.rotation.y = YAW[i];
